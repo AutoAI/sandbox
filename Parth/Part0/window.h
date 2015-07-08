@@ -3,6 +3,10 @@
 
 #include <QOpenGLWindow>
 #include <QOpenGLFunctions>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
+
+class QOpenGLShaderProgram;
 
 class Window : public QOpenGLWindow,
                protected QOpenGLFunctions
@@ -19,6 +23,10 @@ public:
   void teardownGL();
 
 private:
+  QOpenGLBuffer m_vertex;
+  QOpenGLVertexArrayObject m_object;
+  QOpenGLShaderProgram *m_program;
+
   // Private Helpers
   void printContextInformation();
 };

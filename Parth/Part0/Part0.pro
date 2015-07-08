@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl declarative widgets
+
+TEMPLATE += app
 
 TARGET = Part0
 CONFIG   += console
@@ -17,4 +19,5 @@ SOURCES += main.cpp \
     window.cpp
 
 HEADERS += \
-    window.h
+    window.h \
+    vertex.h
