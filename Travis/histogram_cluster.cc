@@ -1,23 +1,9 @@
 // histogram_cluster.cc
 
+#include "histogram_cluster.h"
+
 #include <unordered_map>
 #include <vector>
-
-int x_resolution;
-int y_resolution;
-int block_dimension;
-int num_blocks_x;
-int num_blocks_y;
-int num_bins;
-
-int increment_x;
-int increment_y;
-
-// first index indicates which histogram, second indicates which bin
-uint16_t **histograms;
-
-// cluster map - each block gets a unit16_t to identify which cluster it belongs to
-uint16_t *cluster_map;
 
 HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block_dimension, int num_blocks_x, int num_blocks_y, int num_bins) {
 	// copy parameters to class variables
@@ -83,6 +69,7 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_thres
 	bool left_same;
 	bool top_same;
 	std::unordered_map<int, int> cluster_equivalences; // list of ids that correspond to the same cluster
+	uint16_t *current_block;
 	// iterate over blocks
 	for(int block_y = 0; block_y < num_blocks_y; block_y++) {
 		for(int block_x = 0; block_x < num_blocks_x; block_x++) {
@@ -91,7 +78,7 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_thres
 			top_same = false;
 			// check to see if this block should be in the same cluster as the one to the left
 			if(block_x != 0) {
-				if(chiSquareDifference(current_block, histograms[block_y * num_blocks_x + (block_x - 1])) < closeness_threshold) {
+				if(chiSquareDifference(current_block, histograms[block_y * num_blocks_x + (block_x - 1)]) < closeness_threshold) {
 					left_same = true;
 				}
 			}
