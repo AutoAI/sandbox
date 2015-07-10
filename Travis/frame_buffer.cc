@@ -58,9 +58,8 @@ int main(int argc, char *argv[]) {
 		is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
 		// reverse order of bytes
 		for(int i = 0; i < num_pixels; i++) {
-			frame_buffer[i] = ((frame_buffer[i] & 0xFF00) >> 8) + ((frame_buffer[i] & 0x00FF) << 8);
+			frame_buffer[i] = (frame_buffer[i] >> 8) | ((frame_buffer[i] & 0x00FF) << 8);
 		}
-		std::cout << "First element of frame: " << frame_buffer[0] << std::endl;
 	}
 
 	// deallocate the frame buffer
