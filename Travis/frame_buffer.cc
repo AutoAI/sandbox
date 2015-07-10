@@ -7,8 +7,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "histogram_cluster.h"
-
 int main(int argc, char *argv[]) {
 	// make sure the input is valid
 	if(argc != 4) {
@@ -30,9 +28,11 @@ int main(int argc, char *argv[]) {
 	int y_resolution = std::atoi(argv[3]);
 
 	// dynamically allocate the frame buffer
-	int buffer_size = sizeof(uint16_t) * x_resolution * y_resolution;
+	int num_pixels = x_resolution * y_resolution;
+	int buffer_size = sizeof(uint16_t) * num_pixels;
 	uint16_t *frame_buffer = new uint16_t[buffer_size];
 	if(!frame_buffer) {
+		std::cout << "Failed to allocate buffer" << std::endl;
 		return 1;
 	}
 
@@ -56,6 +56,11 @@ int main(int argc, char *argv[]) {
 	// load each frame into the buffer
 	for(int frame_number = 0; frame_number < num_frames; frame_number++) {
 		is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
+		// reverse order of bytes
+		for(int i = 0; i < num_pixels; i++) {
+			frame_buffer[i] = ((frame_buffer[i] & 0xFF00) >> 8) + ((frame_buffer[i] & 0x00FF) << 8);
+		}
+		std::cout << "First element of frame: " << frame_buffer[0] << std::endl;
 	}
 
 	// deallocate the frame buffer
@@ -63,7 +68,7 @@ int main(int argc, char *argv[]) {
 
 	// print the program's run duration
 	double program_duration = (std::clock() - program_start_time) / (double) CLOCKS_PER_SEC;
-	std::cout << "Loaded " << num_frames << " frames in " << program_duration << " seconds." << std::endl;
+	std::cout << "Loaded " << num_frames << " frames in " << program_duration << " seconds (" << num_frames / program_duration << " frames per second)." << std::endl;
 
 	return 0;
 }
