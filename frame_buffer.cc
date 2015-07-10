@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "histogram_cluster.h"
+
 int main(int argc, char *argv[]) {
 	// make sure the input is valid
 	if(argc != 4) {
