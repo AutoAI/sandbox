@@ -48,7 +48,7 @@ uint16_t *FrameBuffer::next() {
 }
 
 bool FrameBuffer::hasNext() {
-	return frame_number == num_frames;
+	return frame_number != num_frames;
 }
 
 int FrameBuffer::numFrames() {
