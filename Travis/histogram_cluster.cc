@@ -4,6 +4,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block_dimension, int num_blocks_x, int num_blocks_y, int num_bins) {
 	// copy parameters to class variables
@@ -65,7 +66,7 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_thres
 	}
 
 	// CALCULATE CLUSTERS
-	int next_cluster_id = 0;
+	uint16_t next_cluster_id = 0;
 	bool left_same;
 	bool top_same;
 	std::unordered_map<int, int> cluster_equivalences; // list of ids that correspond to the same cluster
@@ -91,7 +92,9 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_thres
 			// if they're both true, set this id equal to one of them and make those id's the same thing
 			if(left_same && top_same) {
 				cluster_map[block_y * num_blocks_x + block_x] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
-				cluster_equivalences[cluster_map[(block_y - 1) * num_blocks_x + block_x]] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
+				if(!(cluster_map[block_y * num_blocks_x + (block_x - 1)] == cluster_map[(block_y - 1) * num_blocks_x + block_x])) {
+					cluster_equivalences[cluster_map[(block_y - 1) * num_blocks_x + block_x]] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
+				}
 			}
 			// if only one is true, this block should be in the same cluster as that one
 			else if(left_same) {
