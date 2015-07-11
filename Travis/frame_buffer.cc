@@ -4,10 +4,10 @@
 
 #include <iostream>
 
-FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resolution){
+FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resolution) {
 	// dynamically allocate the frame buffer
 	int num_pixels = x_resolution * y_resolution;
-	int buffer_size = sizeof(uint16_t) * num_pixels;
+	buffer_size = sizeof(uint16_t) * num_pixels;
 	frame_buffer = new uint16_t[buffer_size];
 	if(!frame_buffer) {
 		std::cout << "Failed to allocate buffer" << std::endl;
@@ -33,7 +33,7 @@ FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resoluti
 	frame_number = 0;
 }
 
-uint16_t *FrameBuffer::next(){
+uint16_t *FrameBuffer::next() {
 	// load each frame into the buffer
 	is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
 
@@ -47,10 +47,14 @@ uint16_t *FrameBuffer::next(){
 	return frame_buffer;
 }
 
-bool FrameBuffer::hasNext(){
+bool FrameBuffer::hasNext() {
 	return frame_number == num_frames;
 }
 
-int FrameBuffer::numFrames(){
+int FrameBuffer::numFrames() {
 	return num_frames;
+}
+
+int FrameBuffer::bufferSize() {
+	return buffer_size;
 }

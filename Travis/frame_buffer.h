@@ -11,10 +11,12 @@ public:
 	uint16_t *next();
 	bool hasNext();
 	int numFrames();
+	int bufferSize();
 
 private:
 	uint16_t *frame_buffer;
 	std::ifstream is;
 	int frame_number;
 	int num_frames;
+	int buffer_size;
 };
