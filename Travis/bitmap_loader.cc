@@ -24,10 +24,7 @@ BitmapLoader::BitmapLoader(std::string file_name, int x_resolution, int y_resolu
 }
 
 uint8_t *BitmapLoader::next() {
-	
-
 	frame_number++;
-
 	return frame_buffer;
 }
 

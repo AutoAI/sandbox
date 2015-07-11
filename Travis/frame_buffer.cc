@@ -43,7 +43,6 @@ uint8_t *FrameBuffer::next() {
 	// }
 
 	frame_number++;
-
 	return frame_buffer;
 }
 
