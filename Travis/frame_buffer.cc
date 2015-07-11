@@ -11,14 +11,14 @@ FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resoluti
 	frame_buffer = new uint16_t[buffer_size];
 	if(!frame_buffer) {
 		std::cout << "Failed to allocate buffer" << std::endl;
-		return 1;
+		return;
 	}
 
 	// open the file
     is.open(file_name.c_str(), is.binary);
     if(!is.is_open()) {
     	std::cout << "Failed to open the file." << std::endl;
-    	return 1;
+    	return;
     }
 
     // find the number of frames
