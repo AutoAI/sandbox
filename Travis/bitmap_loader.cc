@@ -12,7 +12,7 @@ BitmapLoader::BitmapLoader(std::string file_name, int x_resolution, int y_resolu
 	frame_buffer = new uint8_t[buffer_size];
 
 	// load the image
-	bitmap_image image("input.bmp");
+	bitmap_image image(file_name);
 	unsigned char r, g, b;
 	for(int i = 0; i < num_pixels; i++) {
 		image.get_pixel(i % x_resolution, i / x_resolution, r, g, b);

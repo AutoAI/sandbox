@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "frame_buffer.h"
+#include "bitmap_loader.h"
 #include "histogram_cluster.h"
 
 int main(int argc, char *argv[]) {
@@ -42,9 +43,11 @@ int main(int argc, char *argv[]) {
 
 	// CLUSTER TEST
 	FrameBuffer fb2(file_name, x_resolution, y_resolution);
+	BitmapLoader bl(file_name, x_resolution, y_resolution);
 
 	HistogramCluster hc(x_resolution, y_resolution, 15, x_resolution/10, y_resolution/10, 24);
 	uint16_t *clusters = hc.doCluster(fb2.next(), 123, 100);
+	uint16_t *clusters2 = hc.doCluster(bl.next(), 123, 100);
 
 	return 0;
 }
