@@ -8,13 +8,13 @@
 class FrameBuffer {
 public:
 	FrameBuffer(std::string file_name, int x_resolution, int y_resolution);
-	uint16_t *next();
+	uint8_t *next();
 	bool hasNext();
 	int numFrames();
 	int bufferSize();
 
 private:
-	uint16_t *frame_buffer;
+	uint8_t *frame_buffer;
 	std::ifstream is;
 	int frame_number;
 	int num_frames;

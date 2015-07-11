@@ -7,8 +7,8 @@
 FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resolution) {
 	// dynamically allocate the frame buffer
 	num_pixels = x_resolution * y_resolution;
-	buffer_size = sizeof(uint16_t) * num_pixels;
-	frame_buffer = new uint16_t[buffer_size];
+	buffer_size = sizeof(uint8_t) * num_pixels;
+	frame_buffer = new uint8_t[buffer_size];
 	if(!frame_buffer) {
 		std::cout << "Failed to allocate buffer" << std::endl;
 		return;
@@ -33,14 +33,14 @@ FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resoluti
 	frame_number = 0;
 }
 
-uint16_t *FrameBuffer::next() {
+uint8_t *FrameBuffer::next() {
 	// load each frame into the buffer
 	is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
 
-	// reverse order of bytes
-	for(int i = 0; i < num_pixels; i++) {
-		frame_buffer[i] = (frame_buffer[i] >> 8) | ((frame_buffer[i] & 0x00FF) << 8);
-	}
+	// reverse order of bytes (for uint16_t's only!)
+	// for(int i = 0; i < num_pixels; i++) {
+	// 	frame_buffer[i] = (frame_buffer[i] >> 8) | ((frame_buffer[i] & 0x00FF) << 8);
+	// }
 
 	frame_number++;
 
