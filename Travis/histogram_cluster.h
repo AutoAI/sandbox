@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 class HistogramCluster{
 public:
@@ -25,6 +25,5 @@ private:
 	uint16_t **histograms;
 	// cluster map - each block gets a unit16_t to identify which cluster it belongs to
 	uint16_t *cluster_map;
-
 	int chiSquareDifference(uint16_t *histogram_P, uint16_t *histogram_Q);
 };
