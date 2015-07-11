@@ -6,7 +6,7 @@
 
 FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resolution) {
 	// dynamically allocate the frame buffer
-	int num_pixels = x_resolution * y_resolution;
+	num_pixels = x_resolution * y_resolution;
 	buffer_size = sizeof(uint16_t) * num_pixels;
 	frame_buffer = new uint16_t[buffer_size];
 	if(!frame_buffer) {

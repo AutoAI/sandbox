@@ -18,5 +18,6 @@ private:
 	std::ifstream is;
 	int frame_number;
 	int num_frames;
+	int num_pixels;
 	int buffer_size;
 };
