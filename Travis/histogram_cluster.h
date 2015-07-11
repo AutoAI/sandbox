@@ -1,3 +1,5 @@
+// histogram_cluster.h
+
 #pragma once
 
 #include <cstdint>
