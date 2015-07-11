@@ -1,0 +1,20 @@
+// frame_buffer.h
+
+#include <stdint.h>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
+
+class FrameBuffer {
+public:
+	FrameBuffer(std::string file_name, int x_resolution, int y_resolution);
+	uint16_t *next();
+	bool hasNext();
+	int numFrames();
+
+private:
+	uint16_t *frame_buffer;
+	std::ifstream is;
+	int frame_number;
+	int num_frames;
+};

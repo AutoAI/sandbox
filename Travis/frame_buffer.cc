@@ -1,43 +1,20 @@
-// frame-buffer.cc
+// frame_buffer.cc
 
-#include <stdint.h>
+#include "frame_buffer.h"
+
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
-#include <ctime>
 
-int main(int argc, char *argv[]) {
-	// make sure the input is valid
-	if(argc != 4) {
-		std::cout << "Invalid number of arguments: arguments are file_name, x_resolution, and y_resolution" << std::endl;
-		return 1;
-	}
-
-	if(std::atoi(argv[2]) < 1 || std::atoi(argv[3]) < 1) {
-		std::cout << "Resolution arguments must be positive integers." << std::endl;
-		return 1;
-	}
-
-	// start timing the program
-	std::clock_t program_start_time = std::clock();
-
-	// read in arguments
-	std::string file_name = argv[1];
-	int x_resolution = std::atoi(argv[2]);
-	int y_resolution = std::atoi(argv[3]);
-
+FrameBuffer::FrameBuffer(std::string file_name, int x_resolution, int y_resolution){
 	// dynamically allocate the frame buffer
 	int num_pixels = x_resolution * y_resolution;
 	int buffer_size = sizeof(uint16_t) * num_pixels;
-	uint16_t *frame_buffer = new uint16_t[buffer_size];
+	frame_buffer = new uint16_t[buffer_size];
 	if(!frame_buffer) {
 		std::cout << "Failed to allocate buffer" << std::endl;
 		return 1;
 	}
 
 	// open the file
-	std::ifstream is;
     is.open(file_name.c_str(), is.binary);
     if(!is.is_open()) {
     	std::cout << "Failed to open the file." << std::endl;
@@ -51,23 +28,29 @@ int main(int argc, char *argv[]) {
 	if(file_size == 0) {
 		std::cout << "Warning: file size is 0" << std::endl;
 	}
-	int num_frames = file_size / buffer_size;
+	num_frames = file_size / buffer_size;
 
+	frame_number = 0;
+}
+
+uint16_t *FrameBuffer::next(){
 	// load each frame into the buffer
-	for(int frame_number = 0; frame_number < num_frames; frame_number++) {
-		is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
-		// reverse order of bytes
-		for(int i = 0; i < num_pixels; i++) {
-			frame_buffer[i] = (frame_buffer[i] >> 8) | ((frame_buffer[i] & 0x00FF) << 8);
-		}
+	is.read(reinterpret_cast<char*>(frame_buffer), buffer_size);
+
+	// reverse order of bytes
+	for(int i = 0; i < num_pixels; i++) {
+		frame_buffer[i] = (frame_buffer[i] >> 8) | ((frame_buffer[i] & 0x00FF) << 8);
 	}
 
-	// deallocate the frame buffer
-	delete[] frame_buffer;
+	frame_number++;
 
-	// print the program's run duration
-	double program_duration = (std::clock() - program_start_time) / (double) CLOCKS_PER_SEC;
-	std::cout << "Loaded " << num_frames << " frames in " << program_duration << " seconds (" << num_frames / program_duration << " frames per second)." << std::endl;
+	return frame_buffer;
+}
 
-	return 0;
+bool FrameBuffer::hasNext(){
+	return frame_number == num_frames;
+}
+
+int FrameBuffer::numFrames(){
+	return num_frames;
 }
