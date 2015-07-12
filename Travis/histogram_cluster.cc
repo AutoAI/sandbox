@@ -140,7 +140,7 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_thr
 
 // technically this returns 2 * the chi square difference, but we're just comparing them so it doesn't matter
 float HistogramCluster::chiSquareDifference(uint16_t *histogram_P, uint16_t *histogram_Q) {
-	int difference = 0;
+	float difference = 0;
 	for(int bin = 0; bin < num_bins; bin++) {
 		if(histogram_P[bin] + histogram_Q[bin] != 0) {
 			difference += float(histogram_P[bin] - histogram_Q[bin]) * (histogram_P[bin] - histogram_Q[bin]) / float(histogram_P[bin] + histogram_Q[bin]);
