@@ -36,7 +36,7 @@ HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block
 }
 
 // returns NULL on unsuccessful operation (we had too intense a block to see it properly)
-uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_threshold, int blindness_threshold) {
+uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_threshold, int blindness_threshold) {
 	// CALCULATE HISTOGRAMS BLOCK-BY-BLOCK
 	// (at some point I'd like to change this to pixel-by-pixel, mapping appropriate pixels directy to appropriate bins in block histograms)
 	int max_y, max_x;
@@ -139,11 +139,11 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, int closeness_thres
 }
 
 // technically this returns 2 * the chi square difference, but we're just comparing them so it doesn't matter
-int HistogramCluster::chiSquareDifference(uint16_t *histogram_P, uint16_t *histogram_Q) {
+float HistogramCluster::chiSquareDifference(uint16_t *histogram_P, uint16_t *histogram_Q) {
 	int difference = 0;
 	for(int bin = 0; bin < num_bins; bin++) {
 		if(histogram_P[bin] + histogram_Q[bin] != 0) {
-			difference += (histogram_P[bin] - histogram_Q[bin]) * (histogram_P[bin] - histogram_Q[bin]) / (histogram_P[bin] + histogram_Q[bin]); // does this lose too much precision?
+			difference += float(histogram_P[bin] - histogram_Q[bin]) * (histogram_P[bin] - histogram_Q[bin]) / float(histogram_P[bin] + histogram_Q[bin]);
 		}
 	}
 	return difference;
