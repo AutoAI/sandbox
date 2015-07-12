@@ -139,6 +139,10 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_thr
 		}
 	}
 
+	if(cluster_map == NULL) {
+		std::cout << "HistogramCluster::doCluster returned NULL!" << std::endl;
+	}
+
 	return cluster_map;
 }
 
