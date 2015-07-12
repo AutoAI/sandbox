@@ -5,6 +5,8 @@
 #include "frame_buffer.h"
 #include "bitmap_image.hpp"
 
+#include <iostream>
+
 BitmapLoader::BitmapLoader(std::string file_name, int x_resolution, int y_resolution) {
 	// calculate some things so that this class works like the FrameBuffer class
 	num_pixels = x_resolution * y_resolution;
@@ -12,10 +14,13 @@ BitmapLoader::BitmapLoader(std::string file_name, int x_resolution, int y_resolu
 	frame_buffer = new uint8_t[buffer_size];
 
 	// load the image
-	bitmap_image image(file_name);
+	bitmap_image *image = new bitmap_image(file_name);
+	if(image == NULL) {
+		std::cout << "Failed to allocate memory for image <bitmap_loader.cpp>" << std::endl;
+	}
 	unsigned char r, g, b;
 	for(int i = 0; i < num_pixels; i++) {
-		image.get_pixel(i % x_resolution, i / x_resolution, r, g, b);
+		image -> get_pixel(i % x_resolution, i / x_resolution, r, g, b);
 		frame_buffer[i] = r / 3 + b / 3 + g / 3;
 	}
 
