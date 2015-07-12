@@ -43,6 +43,9 @@ uint8_t *FrameBuffer::next() {
 	// }
 
 	frame_number++;
+	if(frame_buffer == NULL) {
+		std::cout << "BitmapLoader::next() returned NULL!" << std::endl;
+	}
 	return frame_buffer;
 }
 

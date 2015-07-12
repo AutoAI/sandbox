@@ -31,6 +31,9 @@ HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block
 
 	// initialize the cluster map buffer
 	cluster_map = new uint16_t[num_blocks_x * num_blocks_y];
+	if(cluster_map == NULL) {
+		std::cout << "Failed to allocate cluster_map <histogram_cluster.cc>" << std::endl;
+	}
 	for(int i = 0; i < num_blocks_x * num_blocks_y; i++) {
 		cluster_map[i] = 65535; // uint16_t max value to indicate garbage
 	}
