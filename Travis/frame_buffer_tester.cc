@@ -49,7 +49,5 @@ int main(int argc, char *argv[]) {
 	uint16_t *clusters = hc.doCluster(fb2.next(), 123, 100);
 	uint16_t *clusters2 = hc.doCluster(bl.next(), 123, 100);
 
-	std::cout << "good." << std::endl;
-
 	return 0;
 }

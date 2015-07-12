@@ -17,9 +17,9 @@ HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block
 
 	// calculate the offset from each block to the next
 	int total_overlap_x = num_blocks_x * block_dimension - x_resolution;
-	int increment_x = block_dimension - total_overlap_x / (num_blocks_x - 1);
+	increment_x = block_dimension - total_overlap_x / (num_blocks_x - 1);
 	int total_overlap_y = num_blocks_y * block_dimension - y_resolution;
-	int increment_y = block_dimension - total_overlap_y / (num_blocks_y - 1);
+	increment_y = block_dimension - total_overlap_y / (num_blocks_y - 1);
 
 	// initialize the histogram buffer
 	histograms = new uint16_t*[num_blocks_x * num_blocks_y];
