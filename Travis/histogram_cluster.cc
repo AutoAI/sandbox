@@ -13,6 +13,7 @@ HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block
 	this -> block_dimension = block_dimension;
 	this -> num_blocks_x = num_blocks_x;
 	this -> num_blocks_y = num_blocks_y;
+	this -> num_bins = num_bins;
 
 	// calculate the offset from each block to the next
 	int total_overlap_x = num_blocks_x * block_dimension - x_resolution;
