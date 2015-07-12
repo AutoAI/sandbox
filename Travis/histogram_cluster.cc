@@ -64,6 +64,7 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_thr
 			}
 			// check if our histogram had too many intensities in the top bin - the scene was too intense and we should probably do something about that
 			if(current_histogram[num_bins - 1] >= blindness_threshold) {
+				std::cout << "HistogramCluster::doCluster returned NULL (we're blind!)" << std::endl;
 				return NULL;
 			}
 		}
