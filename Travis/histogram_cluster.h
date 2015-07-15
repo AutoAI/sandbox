@@ -7,10 +7,8 @@
 class HistogramCluster{
 public:
 	HistogramCluster(int x_resolution, int y_resolution, int block_dimension, int num_blocks_x, int num_blocks_y, int num_bins);
-
 	uint16_t *doCluster(uint8_t *frame_buffer, float closeness_threshold, int blindness_threshold);
 	
-
 private:
 	int x_resolution;
 	int y_resolution;

@@ -6,6 +6,8 @@
 #include <vector>
 #include <iostream>
 
+#include "cluster_hash.h"
+
 HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block_dimension, int num_blocks_x, int num_blocks_y, int num_bins) {
 	// copy parameters to class variables
 	this -> x_resolution = x_resolution;
@@ -43,6 +45,7 @@ HistogramCluster::HistogramCluster(int x_resolution, int y_resolution, int block
 uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_threshold, int blindness_threshold) {
 	// CALCULATE HISTOGRAMS BLOCK-BY-BLOCK
 	// (at some point I'd like to change this to pixel-by-pixel, mapping appropriate pixels directy to appropriate bins in block histograms)
+	std::cout << "histograms" << std::endl;
 	int max_y, max_x;
 	uint16_t *current_histogram;
 	// iterate over blocks
@@ -70,68 +73,68 @@ uint16_t *HistogramCluster::doCluster(uint8_t *frame_buffer, float closeness_thr
 		}
 	}
 
+	std::cout << "clusters" << std::endl;
 	// CALCULATE CLUSTERS
 	uint16_t next_cluster_id = 0;
 	bool left_same;
 	bool top_same;
-	std::unordered_map<int, int> cluster_equivalences; // list of ids that correspond to the same cluster
+	int index_left;
+	int index_top;
+	int index;
+	ClusterHash ch;
 	uint16_t *current_block;
 	// iterate over blocks
 	for(int block_y = 0; block_y < num_blocks_y; block_y++) {
+		std::cout << "y = " << block_y << ":\t";
 		for(int block_x = 0; block_x < num_blocks_x; block_x++) {
 			current_block = histograms[block_y * num_blocks_x + block_x];
 			left_same = false;
 			top_same = false;
+			index = block_y * num_blocks_x + block_x;
+			index_left = block_y * num_blocks_x + (block_x - 1);
+			index_top = (block_y - 1) * num_blocks_x + block_x;
 			// check to see if this block should be in the same cluster as the one to the left
 			if(block_x != 0) {
-				if(chiSquareDifference(current_block, histograms[block_y * num_blocks_x + (block_x - 1)]) < closeness_threshold) {
+				if(chiSquareDifference(current_block, histograms[index_left]) < closeness_threshold) {
 					left_same = true;
 				}
 			}
 			// check to see if this block should be in the same cluster as the one above
 			if(block_y != 0) {
-				if(chiSquareDifference(current_block, histograms[(block_y - 1) * num_blocks_x + block_x]) < closeness_threshold) {
+				if(chiSquareDifference(current_block, histograms[index_top]) < closeness_threshold) {
 					top_same = true;
 				}
 			}
 			// if they're both true, set this id equal to one of them and make those id's the same thing
 			if(left_same && top_same) {
-				cluster_map[block_y * num_blocks_x + block_x] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
-				if(!(cluster_map[block_y * num_blocks_x + (block_x - 1)] == cluster_map[(block_y - 1) * num_blocks_x + block_x])) {
-					cluster_equivalences[cluster_map[(block_y - 1) * num_blocks_x + block_x]] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
+				// assign the id of this block to that of one of those
+				cluster_map[block_y * num_blocks_x + block_x] = cluster_map[index_left];
+				// first, make sure they don't have the same cluster id
+				if(cluster_map[index_left] != cluster_map[index_top]) {
+					// if not, state that these are equivalent cluster ids
+					ch.addEquality(cluster_map[index_left], cluster_map[index_top]);
 				}
 			}
 			// if only one is true, this block should be in the same cluster as that one
 			else if(left_same) {
-				cluster_map[block_y * num_blocks_x + block_x] = cluster_map[block_y * num_blocks_x + (block_x - 1)];
+				cluster_map[index] = cluster_map[index_left];
 			} else if(top_same) {
-				cluster_map[block_y * num_blocks_x + block_x] = cluster_map[(block_y - 1) * num_blocks_x + block_x];
+				cluster_map[index] = cluster_map[index_top];
 			}
 			// if neither is true, this block gets a new id
 			else {
 				cluster_map[block_y * num_blocks_x + block_x] = next_cluster_id++;
 			}
+			std::cout << cluster_map[block_y * num_blocks_x + block_x] << "\t";
 		}
+		std::cout << std::endl;
 	}
 
-	// process the map so that all ids in equivalence to one another map to one of those ids
-	std::vector<int> equivalence;
-	int temp;
-	// iterate over keys
-	for (auto iterator = cluster_equivalences.begin(); iterator != cluster_equivalences.end(); ++iterator) {
-		temp = iterator -> first;
-		// add all keys that eventually point to a value to our vector
-		while(cluster_equivalences.find(cluster_equivalences[temp]) != cluster_equivalences.end()) {
-			equivalence.push_back(temp);
-			temp = cluster_equivalences[temp];
-		}
-		// make these keys all directly map to our vector
-		for(int i = 0; i < equivalence.size(); i++) {
-			cluster_equivalences[equivalence[i]] = temp;
-		}
-		equivalence.clear();
-	}
+	std::cout << "processing map" << std::endl;
+	// process the map so that all ids in equivalence to one another map to one of those ids - commented out because its not quite ready yet
+	std::unordered_map<int, int> cluster_equivalences = ch.genMap();
 
+	std::cout << "mapping" << std::endl;
 	// if values in our map are mapped to something, make them that thing instead so that clusters have 1 id only
 	int size = num_blocks_y * num_blocks_x;
 	for(int i = 0; i < size; i++) {
